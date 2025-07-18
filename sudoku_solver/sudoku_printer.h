@@ -2,7 +2,7 @@
 #include <iostream>
 using std::cout;
 
-void print(std::vector<std::vector<int>>& board)
+void print(std::vector<std::vector<std::vector<int>>>& board)
 {
     cout << "\nPrinting sudoku: \n\n";
     for (int i = 0;i < board.size(); i++)
@@ -10,10 +10,16 @@ void print(std::vector<std::vector<int>>& board)
 
         // print the row
         for (int j = 0;j < board[i].size(); j++){
-            if (board[i][j]==0){
+
+            if (board[i][j].size()>1){
+                cout << "WARNING: THE SUDOKU BOARD IS NOT WHAT IT SHOULD BE\n";
+                throw 505;
+            }
+
+            if (board[i][j][0]==0){
                 cout << " "; // Print space instead of empty
             } else {
-                cout << board[i][j];
+                cout << board[i][j][0];
             }
             cout << " ";
             // Every 3rd time print |
