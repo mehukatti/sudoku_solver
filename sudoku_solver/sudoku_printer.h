@@ -10,7 +10,11 @@ void print(std::vector<std::vector<int>>& board)
 
         // print the row
         for (int j = 0;j < board[i].size(); j++){
-            cout << board[i][j];
+            if (board[i][j]==0){
+                cout << " "; // Print space instead of empty
+            } else {
+                cout << board[i][j];
+            }
             cout << " ";
             // Every 3rd time print |
             if( j == 2 or j == 5){
