@@ -1,0 +1,8 @@
+*
+!.gitignore
+!readme.md
+
+# specific files in sub folders
+!*/
+!*.h
+!*.cpp
