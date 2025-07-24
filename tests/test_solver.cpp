@@ -11,8 +11,10 @@ int main()
     std::string file_path = "example_sudokus/easy/sudoku_1.txt";
 	std::vector<std::vector<std::vector<int>>> board = read_sudoku(file_path);
     print(board);
-    missing_solutions(board);
+    SudokuSolver solver;
+    solver.board = board;
+    solver.solve();
     cout << "After solving:\n";
-    print(board);
+    print(solver.board);
 	return 0;
 }
