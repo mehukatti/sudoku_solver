@@ -9,12 +9,12 @@ void invalid_values(std::vector<int>& cell_values){
         throw ("Cell should not be empty. Internal error.");
     }
     
-    for (int i = 0;i < cell_values.size(); i++)
+    for (int cell_value : cell_values)
     {
-        if (cell_values[i]< 0) {
+        if (cell_value< 0) {
             throw ("Cell contains negative values");
         }
-        else if (cell_values[i]>9) {
+        else if (cell_value>9) {
             throw ("Cell contains values over 9");
         }
     }
@@ -81,6 +81,20 @@ void solutions_by_exlusion(std::vector<std::vector<std::vector<int>>>& board, in
             continue;
         }
         int used_value = board[row_index][col][0];
+        cout << "Value in solved cell: ";
+        cout << used_value;
+        cout << "\n";
+        if (value_in_vector(possible_numbers, used_value)){
+            remove_from_vector_by_value(possible_numbers, used_value);
+        }
+    }
+
+    // Remove numbers that already are in the column:
+    for (int row = 0;row < 9; row++){
+        if (unsolved_cell(board[row][column_index])){
+            continue;
+        }
+        int used_value = board[row][column_index][0];
         cout << "Value in solved cell: ";
         cout << used_value;
         cout << "\n";
