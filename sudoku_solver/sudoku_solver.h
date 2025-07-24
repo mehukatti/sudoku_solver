@@ -1,5 +1,6 @@
 #include <vector>
 #include <iostream>
+#include <bits/stdc++.h>
 using std::cout;
 
 void invalid_values(std::vector<int>& cell_values){
@@ -41,6 +42,63 @@ bool unsolved_cell(std::vector<int>& cell_values){
     }
 }
 
+bool value_in_vector(std::vector<int>& values, int value){
+    auto it = find(values.begin(), values.end(), value);
+    cout << "\n";
+    if (it!=values.end()){
+        return true;
+    } else {
+        return false;
+    }
+}
+
+void remove_from_vector_by_value(std::vector<int>& vec, int value){
+    // remove from vector by given value
+    if (!(value_in_vector(vec, value))){
+        return;
+    }
+    int index_to_remove;
+    for (int i = 0;i < vec.size(); i++){
+        if (value==vec[i]){
+            index_to_remove = i;
+            break;
+        }
+    }
+    vec.erase(vec.begin() + index_to_remove);
+    return;
+}
+
+void solutions_by_exlusion(std::vector<std::vector<std::vector<int>>>& board, int row_index, int column_index){
+    // Add all possible solutions to the board's zeros
+    
+    // Required values:
+    std::vector<int> possible_numbers;
+    possible_numbers = {1,2,3,4,5,6,7,8,9};
+
+    // Remove numbers that already are in the row:
+    for (int col = 0;col < 9; col++){
+        if (unsolved_cell(board[row_index][col])){
+            continue;
+        }
+        int used_value = board[row_index][col][0];
+        cout << "Value in solved cell: ";
+        cout << used_value;
+        cout << "\n";
+        if (value_in_vector(possible_numbers, used_value)){
+            remove_from_vector_by_value(possible_numbers, used_value);
+        }
+    }
+
+    cout << "Possible numbers: ";
+    for (int number : possible_numbers){
+        cout << number;
+        cout << " ";
+    }
+    cout << "\n";
+
+    return;
+}
+
 bool missing_solutions(std::vector<std::vector<std::vector<int>>>& board){
     // Check if all the cells have one and only one solution that is not zero.
     for (int i = 0;i < board.size(); i++)
@@ -56,6 +114,7 @@ bool missing_solutions(std::vector<std::vector<std::vector<int>>>& board){
                 cout << " ";
                 cout << j;
                 cout << "\n";
+                solutions_by_exlusion(board, i, j);
                 return true;
             }
         }
