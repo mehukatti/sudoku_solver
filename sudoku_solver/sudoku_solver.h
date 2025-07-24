@@ -8,6 +8,7 @@ class SudokuSolver
 {
 public:
     std::vector<std::vector<std::vector<int>>> board;
+    bool eventfull_solution_loop = false;
     void invalid_values(std::vector<int>& cell_values){
         // Check for invalid values in a cell
         if (cell_values.size()==0){
@@ -113,24 +114,53 @@ public:
 
         if (possible_numbers.size()==1){
             board[row_index][column_index] = possible_numbers;
+            eventfull_solution_loop = true;
         }
 
         return;
     }
 
-    bool solve(){
-        // Check if all the cells have one and only one solution that is not zero.
-        for (int i = 0;i < board.size(); i++)
-        {
-            for (int j = 0;j < board[i].size(); j++){
-                // Check for invalid values before checking if there is unsolved cells
-                invalid_values(board[i][j]);
 
-                if (unsolved_cell(board[i][j])){
-                    solutions_by_exlusion(i, j);
+    bool unsolved_board(){
+        // Check if the board is still unsolved
+        for (std::vector<std::vector<int>> row : board){
+            for (std::vector<int> cell_values : row){
+                if (unsolved_cell(cell_values)){
+                    return true;
                 }
             }
         }
         return false;
+    }
+
+    bool solve(){
+        // Check if all the cells have one and only one solution that is not zero.
+        bool stuck = false;
+        while (unsolved_board() && !stuck) {
+            eventfull_solution_loop = false;
+            for (int i = 0;i < board.size(); i++)
+            {
+                for (int j = 0;j < board[i].size(); j++){
+                    // Check for invalid values before checking if there is unsolved cells
+                    invalid_values(board[i][j]);
+
+                    if (unsolved_cell(board[i][j])){
+                        solutions_by_exlusion(i, j);
+                    }
+                }
+            }
+            if (eventfull_solution_loop){
+                stuck = false;
+            } else {
+                stuck = true;
+            }
+        }
+        if (stuck){
+            cout << "\nSudoku stuck.\n";
+            return false;
+        } else {
+            cout << "\nSudoku solved.\n";
+            return true;
+        }
     }
 };
