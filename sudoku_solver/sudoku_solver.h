@@ -44,7 +44,6 @@ bool unsolved_cell(std::vector<int>& cell_values){
 
 bool value_in_vector(std::vector<int>& values, int value){
     auto it = find(values.begin(), values.end(), value);
-    cout << "\n";
     if (it!=values.end()){
         return true;
     } else {
@@ -75,40 +74,50 @@ void solutions_by_exlusion(std::vector<std::vector<std::vector<int>>>& board, in
     std::vector<int> possible_numbers;
     possible_numbers = {1,2,3,4,5,6,7,8,9};
 
-    // Remove numbers that already are in the row:
+    // Remove numbers that already are in the ROW:
     for (int col = 0;col < 9; col++){
         if (unsolved_cell(board[row_index][col])){
             continue;
         }
         int used_value = board[row_index][col][0];
-        cout << "Value in solved cell: ";
-        cout << used_value;
-        cout << "\n";
         if (value_in_vector(possible_numbers, used_value)){
             remove_from_vector_by_value(possible_numbers, used_value);
         }
     }
 
-    // Remove numbers that already are in the column:
+    // Remove numbers that already are in the COLUMN:
     for (int row = 0;row < 9; row++){
         if (unsolved_cell(board[row][column_index])){
             continue;
         }
         int used_value = board[row][column_index][0];
-        cout << "Value in solved cell: ";
-        cout << used_value;
-        cout << "\n";
         if (value_in_vector(possible_numbers, used_value)){
             remove_from_vector_by_value(possible_numbers, used_value);
         }
     }
 
-    cout << "Possible numbers: ";
-    for (int number : possible_numbers){
-        cout << number;
-        cout << " ";
+    // Remove numbers that already are in the BOX:
+    int box_start_row;
+    box_start_row = row_index / 3 * 3;
+    int box_start_column;
+    box_start_column = column_index / 3 * 3;
+
+    for (int row = box_start_row;row < box_start_row+3; row++){
+        for (int col = box_start_column;col < box_start_column+3; col++){
+
+            if (unsolved_cell(board[row][col])){
+                continue;
+            }
+            int used_value = board[row][col][0];
+            if (value_in_vector(possible_numbers, used_value)){
+                remove_from_vector_by_value(possible_numbers, used_value);
+            }
+        }
     }
-    cout << "\n";
+
+    if (possible_numbers.size()==1){
+        board[row_index][column_index] = possible_numbers;
+    }
 
     return;
 }
@@ -122,14 +131,7 @@ bool missing_solutions(std::vector<std::vector<std::vector<int>>>& board){
             invalid_values(board[i][j]);
 
             if (unsolved_cell(board[i][j])){
-                // TODO: search for solution
-                cout << "Unsolved cell: ";
-                cout << i;
-                cout << " ";
-                cout << j;
-                cout << "\n";
                 solutions_by_exlusion(board, i, j);
-                return true;
             }
         }
     }
