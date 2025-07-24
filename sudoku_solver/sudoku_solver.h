@@ -73,7 +73,7 @@ public:
         return;
     }
 
-    void area_solutions_by_exlusion(std::vector<int>& possible_numbers, int row_index, int column_index){
+    void area_solutions_by_only_possibility(std::vector<int>& possible_numbers, int row_index, int column_index){
         if (unsolved_cell(board[row_index][column_index])){
             return;
         }
@@ -83,8 +83,8 @@ public:
         }
     }
 
-    void solutions_by_exlusion(int row_index, int column_index){
-        // Add all possible solutions to the board's zeros
+    void solutions_by_only_possibility(int row_index, int column_index){
+        // If only one number is acceptable in a cell, use it as a solution. (= row, column or box forbids all but one number)
         
         // Required values:
         std::vector<int> possible_numbers;
@@ -92,12 +92,12 @@ public:
 
         // Remove numbers that already are in the ROW:
         for (int col = 0;col < 9; col++){
-            area_solutions_by_exlusion(possible_numbers, row_index, col);
+            area_solutions_by_only_possibility(possible_numbers, row_index, col);
         }
 
         // Remove numbers that already are in the COLUMN:
         for (int row = 0;row < 9; row++){
-            area_solutions_by_exlusion(possible_numbers, row, column_index);
+            area_solutions_by_only_possibility(possible_numbers, row, column_index);
         }
 
         // Remove numbers that already are in the BOX:
@@ -108,7 +108,7 @@ public:
 
         for (int row = box_start_row;row < box_start_row+3; row++){
             for (int col = box_start_column;col < box_start_column+3; col++){
-                area_solutions_by_exlusion(possible_numbers, row, col);
+                area_solutions_by_only_possibility(possible_numbers, row, col);
             }
         }
 
@@ -147,7 +147,7 @@ public:
                         continue;
                     }
 
-                    solutions_by_exlusion(row_index, column_index);
+                    solutions_by_only_possibility(row_index, column_index);
                 }
             }
             if (eventfull_solution_loop){
