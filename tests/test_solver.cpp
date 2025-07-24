@@ -12,5 +12,7 @@ int main()
 	std::vector<std::vector<std::vector<int>>> board = read_sudoku(file_path);
     print(board);
     missing_solutions(board);
+    cout << "After solving:\n";
+    print(board);
 	return 0;
 }

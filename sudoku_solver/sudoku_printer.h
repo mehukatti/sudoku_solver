@@ -12,8 +12,9 @@ void print(std::vector<std::vector<std::vector<int>>>& board)
         for (int j = 0;j < board[i].size(); j++){
 
             if (board[i][j].size()>1){
-                cout << "WARNING: THE SUDOKU BOARD IS NOT WHAT IT SHOULD BE\n";
-                throw 505;
+                // While attempting to solve the board, all possible solutions are marked into each cell until all but one number can be excluded.
+                // To print properly, replace all such incompletely solved cells with zero vector.
+                cout << " "; // Print space instead of empty
             }
 
             if (board[i][j][0]==0){
