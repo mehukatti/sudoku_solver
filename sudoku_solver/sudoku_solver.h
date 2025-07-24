@@ -67,6 +67,16 @@ void remove_from_vector_by_value(std::vector<int>& vec, int value){
     return;
 }
 
+void area_solutions_by_exlusion(std::vector<std::vector<std::vector<int>>>& board, std::vector<int>& possible_numbers, int row_index, int column_index){
+    if (unsolved_cell(board[row_index][column_index])){
+        return;
+    }
+    int used_value = board[row_index][column_index][0];
+    if (value_in_vector(possible_numbers, used_value)){
+        remove_from_vector_by_value(possible_numbers, used_value);
+    }
+}
+
 void solutions_by_exlusion(std::vector<std::vector<std::vector<int>>>& board, int row_index, int column_index){
     // Add all possible solutions to the board's zeros
     
@@ -76,24 +86,12 @@ void solutions_by_exlusion(std::vector<std::vector<std::vector<int>>>& board, in
 
     // Remove numbers that already are in the ROW:
     for (int col = 0;col < 9; col++){
-        if (unsolved_cell(board[row_index][col])){
-            continue;
-        }
-        int used_value = board[row_index][col][0];
-        if (value_in_vector(possible_numbers, used_value)){
-            remove_from_vector_by_value(possible_numbers, used_value);
-        }
+        area_solutions_by_exlusion(board, possible_numbers, row_index, col);
     }
 
     // Remove numbers that already are in the COLUMN:
     for (int row = 0;row < 9; row++){
-        if (unsolved_cell(board[row][column_index])){
-            continue;
-        }
-        int used_value = board[row][column_index][0];
-        if (value_in_vector(possible_numbers, used_value)){
-            remove_from_vector_by_value(possible_numbers, used_value);
-        }
+        area_solutions_by_exlusion(board, possible_numbers, row, column_index);
     }
 
     // Remove numbers that already are in the BOX:
@@ -104,14 +102,7 @@ void solutions_by_exlusion(std::vector<std::vector<std::vector<int>>>& board, in
 
     for (int row = box_start_row;row < box_start_row+3; row++){
         for (int col = box_start_column;col < box_start_column+3; col++){
-
-            if (unsolved_cell(board[row][col])){
-                continue;
-            }
-            int used_value = board[row][col][0];
-            if (value_in_vector(possible_numbers, used_value)){
-                remove_from_vector_by_value(possible_numbers, used_value);
-            }
+            area_solutions_by_exlusion(board, possible_numbers, row, col);
         }
     }
 
