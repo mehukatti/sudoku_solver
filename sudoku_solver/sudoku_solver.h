@@ -138,15 +138,16 @@ public:
         bool stuck = false;
         while (unsolved_board() && !stuck) {
             eventfull_solution_loop = false;
-            for (int i = 0;i < board.size(); i++)
+            for (int row_index = 0;row_index < 9; row_index++)
             {
-                for (int j = 0;j < board[i].size(); j++){
+                for (int column_index = 0;column_index < 9; column_index++){
                     // Check for invalid values before checking if there is unsolved cells
-                    invalid_values(board[i][j]);
-
-                    if (unsolved_cell(board[i][j])){
-                        solutions_by_exlusion(i, j);
+                    invalid_values(board[row_index][column_index]);
+                    if (!(unsolved_cell(board[row_index][column_index]))){
+                        continue;
                     }
+
+                    solutions_by_exlusion(row_index, column_index);
                 }
             }
             if (eventfull_solution_loop){
