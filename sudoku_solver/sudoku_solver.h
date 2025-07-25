@@ -120,6 +120,19 @@ public:
         return;
     }
 
+    void solutions_by_only_cell(int row_index, int column_index){
+        // Check if a missing number only has one suitable cell in area.
+        // Area is row, column or box.
+        for (int number = 1 ; number <= 9 ; number++){
+            // Is the number already in area
+            // Row
+            std::vector<std::vector<int>> row = board[row_index];
+
+            // Column
+            
+        }
+    }
+
 
     bool unsolved_board(){
         // Check if the board is still unsolved
@@ -147,6 +160,7 @@ public:
                         continue;
                     }
 
+                    solutions_by_only_cell(row_index, column_index);
                     solutions_by_only_possibility(row_index, column_index);
                 }
             }
