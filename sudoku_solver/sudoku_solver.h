@@ -34,6 +34,18 @@ bool value_in_vector(std::vector<int>& values, int value){
     }
 }
 
+std::vector<int> missing_numbers_from_area(std::vector<int>& used_numbers){
+    // Return used numbers in the column
+    std::vector<int> missing_numbers;
+    for (int number = 1 ; number <= 9 ; number++){
+        if (value_in_vector(used_numbers, number)){
+            continue;
+        }
+        missing_numbers.push_back(number);
+    }
+    return missing_numbers;
+}
+
 void remove_from_vector_by_value(std::vector<int>& vec, int value){
     // remove from vector by given value
     if (!(value_in_vector(vec, value))){
@@ -108,10 +120,10 @@ public:
         std::vector<int> used_numbers;
         for (int row = box_start_row;row < box_start_row+3; row++){
             for (int col = box_start_column;col < box_start_column+3; col++){
-                if (unsolved_cell(board[row_index][column_index])){
+                if (unsolved_cell(board[row][col])){
                     continue;
                 }
-                used_numbers.push_back(board[row_index][column_index][0]);
+                used_numbers.push_back(board[row][col][0]);
                 }
         }
         return used_numbers;
@@ -164,19 +176,112 @@ public:
         return;
     }
 
-    void solutions_by_only_cell(int row_index, int column_index){
-        // Check if a missing number only has one suitable cell in area.
-        // Area is row, column or box.
-        for (int number = 1 ; number <= 9 ; number++){
-            // Is the number already in area
-            // Row
-            std::vector<std::vector<int>> row = board[row_index];
+    void solutions_by_row(int row_index){
+        // Find a number in row that only has one possible cell
 
-            // Column
-            
+        std::vector<int> row = row_values(row_index);
+        std::vector<int> missing_numbers = missing_numbers_from_area(row);
+        
+        for (int missing_number : missing_numbers) {
+            // Does any other area block?
+            // Iterate the row
+            std::vector<int> possible_indexes;
+            for (int column_index = 0 ; column_index < 9 ; column_index++){
+                std::vector<int>cell_values = board[row_index][column_index];
+                if (!(unsolved_cell(cell_values))){
+                    continue;
+                }
+                // Check if column blocks the missing number for this cell
+                std::vector<int> column = column_values(column_index);
+                if (value_in_vector(column, missing_number)){
+                    continue;
+                }
+                std::vector<int> box = box_values(row_index, column_index);
+                if (value_in_vector(box, missing_number)){
+                    continue;
+                }
+                possible_indexes.push_back(column_index);
+            }
+            if (possible_indexes.size()==1) {
+                board[row_index][possible_indexes[0]][0] = missing_number;
+                eventfull_solution_loop = true;
+            }
         }
     }
 
+    void solutions_by_column(int column_index){
+        // Find a number in row that only has one possible cell
+
+        std::vector<int> column = column_values(column_index);
+        std::vector<int> missing_numbers = missing_numbers_from_area(column);
+        
+        for (int missing_number : missing_numbers) {
+            // Does any other area block?
+            // Iterate the row
+            std::vector<int> possible_indexes;
+            for (int row_index = 0 ; row_index < 9 ; row_index++){
+                std::vector<int>cell_values = board[row_index][column_index];
+                if (!(unsolved_cell(cell_values))){
+                    continue;
+                }
+                // Check if column blocks the missing number for this cell
+                std::vector<int> row = row_values(row_index);
+                if (value_in_vector(row, missing_number)){
+                    continue;
+                }
+                std::vector<int> box = box_values(row_index, column_index);
+                if (value_in_vector(box, missing_number)){
+                    continue;
+                }
+                possible_indexes.push_back(row_index);
+            }
+            if (possible_indexes.size()==1) {
+                board[possible_indexes[0]][column_index][0] = missing_number;
+                eventfull_solution_loop = true;
+            }
+        }
+    }
+
+    void solutions_by_box(int row_index, int column_index){
+        // Find a number in row that only has one possible cell
+
+        std::vector<int> box = box_values(row_index, column_index);
+        std::vector<int> missing_numbers = missing_numbers_from_area(box);
+        
+        int box_start_row;
+        box_start_row = row_index / 3 * 3;
+        int box_start_column;
+        box_start_column = column_index / 3 * 3;
+
+        for (int missing_number : missing_numbers) {
+            // Does any other area block?
+            // Iterate the row
+            std::vector<std::vector<int>> possible_indexes;
+            for (int i = box_start_row;i < box_start_row+3; i++){
+                for (int j = box_start_column;j < box_start_column+3; j++){
+                    std::vector<int>cell_values = board[i][column_index];
+                    if (!(unsolved_cell(cell_values))){
+                        continue;
+                    }
+                    // Check if column blocks the missing number for this cell
+                    std::vector<int> row = row_values(i);
+                    if (value_in_vector(row, missing_number)){
+                        continue;
+                    }
+                    std::vector<int> column = column_values(j);
+                    if (value_in_vector(column, missing_number)){
+                        continue;
+                    }
+                    std::vector<int> coords = {i,j};
+                    possible_indexes.push_back(coords);
+                }
+            }
+            if (possible_indexes.size()==1) {
+                board[possible_indexes[0][0]][possible_indexes[0][1]][0] = missing_number;
+                eventfull_solution_loop = true;
+            }
+        }
+    }    
 
     bool unsolved_board(){
         // Check if the board is still unsolved
@@ -204,7 +309,9 @@ public:
                         continue;
                     }
 
-                    solutions_by_only_cell(row_index, column_index);
+                    solutions_by_row(row_index);
+                    solutions_by_column(column_index);
+                    solutions_by_box(row_index, column_index);
                     solutions_by_only_possibility(row_index, column_index);
                 }
             }
