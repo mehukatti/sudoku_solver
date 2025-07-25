@@ -25,17 +25,6 @@ bool unsolved_cell(std::vector<int>& cell_values){
     }
 }
 
-std::vector<int> used_numbers_in_area(std::vector<std::vector<int>>& area_2d){
-    std::vector<int> used_numbers;
-    for (std::vector<int> cell_values : area_2d){
-        if (unsolved_cell(cell_values)){
-            continue;
-        }
-        used_numbers.push_back(cell_values[0]);
-    }
-    return used_numbers;
-}
-
 bool value_in_vector(std::vector<int>& values, int value){
     auto it = find(values.begin(), values.end(), value);
     if (it!=values.end()){
