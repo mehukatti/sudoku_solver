@@ -8,7 +8,7 @@ using std::cout;
 int main()
 {
 	cout << "Test reading example sudoku. \n";
-    std::string file_path = "example_sudokus/easy/sudoku_1.txt";
+    std::string file_path = "example_sudokus/hard/sudoku_1.txt";
 	std::vector<std::vector<std::vector<int>>> board = read_sudoku(file_path);
     print(board);
     SudokuSolver solver;
