@@ -73,6 +73,50 @@ public:
     std::vector<std::vector<std::vector<int>>> board;
     bool eventfull_solution_loop = false;
 
+    std::vector<int> column_values(int column_index){
+        // Return used numbers in the column
+        std::vector<int> used_numbers;
+        for (int row_index = 0 ; row_index < 9 ; row_index++){
+            if (unsolved_cell(board[row_index][column_index])){
+                continue;
+            }
+            used_numbers.push_back(board[row_index][column_index][0]);
+        }
+        return used_numbers;
+    }
+
+    std::vector<int> row_values(int row_index){
+        // Return used numbers in the row
+        std::vector<int> used_numbers;
+        for (int column_index = 0 ; column_index < 9 ; column_index++){
+            if (unsolved_cell(board[row_index][column_index])){
+                continue;
+            }
+            used_numbers.push_back(board[row_index][column_index][0]);
+        }
+        return used_numbers;
+    }
+
+    std::vector<int> box_values(int row_index, int column_index){
+        // Return used numbers in the box
+
+        int box_start_row;
+        box_start_row = row_index / 3 * 3;
+        int box_start_column;
+        box_start_column = column_index / 3 * 3;
+
+        std::vector<int> used_numbers;
+        for (int row = box_start_row;row < box_start_row+3; row++){
+            for (int col = box_start_column;col < box_start_column+3; col++){
+                if (unsolved_cell(board[row_index][column_index])){
+                    continue;
+                }
+                used_numbers.push_back(board[row_index][column_index][0]);
+                }
+        }
+        return used_numbers;
+    }
+
     void area_solutions_by_only_possibility(std::vector<int>& possible_numbers, int row_index, int column_index){
         if (unsolved_cell(board[row_index][column_index])){
             return;
