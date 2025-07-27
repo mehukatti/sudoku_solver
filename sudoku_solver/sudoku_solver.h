@@ -79,6 +79,16 @@ void invalid_values(std::vector<int>& cell_values){
     }
 }
 
+
+void occurances_of_numbers_in_area_invalid(std::vector<int>& area){
+    for (int number = 1 ; number <= 9 ; number++){
+        int amount = count(area.begin(), area.end(), number);
+        if (amount > 1){
+            throw ("Incorrectly filled board");
+        }
+    }
+}
+
 class SudokuSolver
 {
 public:
@@ -127,6 +137,25 @@ public:
                 }
         }
         return used_numbers;
+    }
+
+    void validator() {
+        // Check if the board is filled wrong
+        for (int row_index = 0 ; row_index < 9 ; row_index++){
+            std::vector<int> area = row_values(row_index);
+            occurances_of_numbers_in_area_invalid(area);
+        }
+        for (int column_index = 0 ; column_index < 9 ; column_index++){
+            std::vector<int> area = column_values(column_index);
+            occurances_of_numbers_in_area_invalid(area);
+        }
+        // start indexes in box are 0, 3 and 6
+        for (int box_start_row = 0; box_start_row <=6; box_start_row = box_start_row+3){
+            for (int box_start_column = 0; box_start_column <=6; box_start_column = box_start_column+3){
+                std::vector<int> area = box_values(box_start_row, box_start_column);
+                occurances_of_numbers_in_area_invalid(area);
+            }
+        }
     }
 
     void area_solutions_by_only_possibility(std::vector<int>& possible_numbers, int row_index, int column_index){
@@ -298,6 +327,7 @@ public:
     bool solve(){
         // Check if all the cells have one and only one solution that is not zero.
         bool stuck = false;
+        validator();
         while (unsolved_board() && !stuck) {
             eventfull_solution_loop = false;
             for (int row_index = 0;row_index < 9; row_index++)
@@ -328,5 +358,6 @@ public:
             cout << "\nSudoku solved.\n";
             return true;
         }
+        validator();
     }
 };
